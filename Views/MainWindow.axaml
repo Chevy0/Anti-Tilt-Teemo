@@ -1,0 +1,462 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:AntiTiltTeemo.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        d:DesignWidth="1200"
+        d:DesignHeight="800"
+        x:Class="AntiTiltTeemo.Views.MainWindow"
+        x:DataType="vm:MainViewModel"
+        Title="AntiTiltTeemo"
+        Width="1200"
+        Height="800"
+        MinWidth="1000"
+        MinHeight="700"
+        Background="#091428">
+
+    <Design.DataContext>
+        <vm:MainViewModel />
+    </Design.DataContext>
+
+    <Window.Styles>
+        <Style Selector="TextBlock">
+            <Setter Property="Foreground" Value="#F0E6D2" />
+        </Style>
+        <Style Selector="Button">
+            <Setter Property="Background" Value="#1E2328" />
+            <Setter Property="Foreground" Value="#C8AA6E" />
+            <Setter Property="BorderBrush" Value="#785A28" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Padding" Value="16,10" />
+            <Setter Property="CornerRadius" Value="4" />
+            <Setter Property="FontWeight" Value="Bold" />
+        </Style>
+        <Style Selector="Button:disabled">
+            <Setter Property="Background" Value="#3C3C41" />
+            <Setter Property="Foreground" Value="#A09B8C" />
+        </Style>
+        <Style Selector="Button.hit-button">
+            <Setter Property="Background" Value="#0F1A2E" />
+            <Setter Property="BorderBrush" Value="#C8AA6E" />
+            <Setter Property="BorderThickness" Value="3" />
+            <Setter Property="Padding" Value="0" />
+        </Style>
+        <Style Selector="Button.hit-button:pointerover">
+            <Setter Property="Background" Value="#18304A" />
+            <Setter Property="BorderBrush" Value="#F5D887" />
+            <Setter Property="BorderThickness" Value="4" />
+        </Style>
+        <Style Selector="Button.primary-button">
+            <Setter Property="Background" Value="#C8AA6E" />
+            <Setter Property="Foreground" Value="#091428" />
+        </Style>
+        <Style Selector="Button.weapon-card">
+            <Setter Property="Background" Value="#091428" />
+            <Setter Property="Foreground" Value="#F0E6D2" />
+            <Setter Property="BorderBrush" Value="#3C3C41" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Padding" Value="8" />
+            <Setter Property="CornerRadius" Value="4" />
+            <Setter Property="Width" Value="120" />
+            <Setter Property="Height" Value="140" />
+            <Setter Property="Margin" Value="4" />
+        </Style>
+        <Style Selector="Button.weapon-card:pointerover">
+            <Setter Property="Background" Value="#15263A" />
+            <Setter Property="BorderBrush" Value="#C8AA6E" />
+        </Style>
+        <Style Selector="Button.weapon-card.selected">
+            <Setter Property="Background" Value="#1B2D3C" />
+            <Setter Property="BorderBrush" Value="#F5D887" />
+            <Setter Property="BorderThickness" Value="2" />
+        </Style>
+        <Style Selector="ProgressBar.teemo-health">
+            <Setter Property="Height" Value="16" />
+            <Setter Property="Background" Value="#601D24" />
+            <Setter Property="Foreground" Value="#2DAD62" />
+            <Setter Property="BorderThickness" Value="0" />
+        </Style>
+    </Window.Styles>
+
+    <Grid>
+        <Grid RowDefinitions="Auto,*" Margin="20">
+            <Border Grid.Row="0"
+                    Background="#0F1A2E"
+                    BorderBrush="#785A28"
+                    BorderThickness="0,0,0,1"
+                    Padding="20">
+                <Grid ColumnDefinitions="*,Auto">
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="LAST MATCH"
+                                   Foreground="#A09B8C"
+                                   FontSize="11"
+                                   FontWeight="Bold"
+                                   LetterSpacing="2" />
+                        <TextBlock Text="{Binding LastMatchResult}"
+                                   Foreground="#C89B3C"
+                                   FontSize="28"
+                                   FontWeight="Black"
+                                   LetterSpacing="2" />
+                    </StackPanel>
+                    <Border Grid.Column="1"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Background="{Binding TiltStatusColor}"
+                            BorderBrush="#C8AA6E"
+                            BorderThickness="1"
+                            CornerRadius="4"
+                            Padding="14,10">
+                        <StackPanel Spacing="3">
+                            <TextBlock Text="ANGER LEVEL"
+                                       Foreground="#D8D4C8"
+                                       FontSize="10"
+                                       FontWeight="Bold"
+                                       HorizontalAlignment="Center"
+                                       LetterSpacing="1" />
+                            <TextBlock Text="{Binding TiltStatusLabel}"
+                                       Foreground="White"
+                                       FontSize="18"
+                                       FontWeight="Black"
+                                       HorizontalAlignment="Center" />
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </Border>
+
+            <Grid Grid.Row="1"
+                  ColumnDefinitions="220,*,280"
+                  ColumnSpacing="16"
+                  Margin="0,16,0,0">
+                <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto">
+                    <StackPanel Spacing="12">
+                        <Border Background="#0F1A2E"
+                                BorderBrush="#785A28"
+                                BorderThickness="1"
+                                CornerRadius="4"
+                                Padding="12">
+                            <StackPanel Spacing="12">
+                                <TextBlock Text="MATCH HISTORY"
+                                           Foreground="#C8AA6E"
+                                           FontSize="11"
+                                           FontWeight="Bold"
+                                           LetterSpacing="1" />
+                                <TextBlock Text="NO MATCHES YET"
+                                           IsVisible="{Binding HasNoMatchHistory}"
+                                           Foreground="#77766F"
+                                           FontSize="10"
+                                           TextWrapping="Wrap" />
+                                <ItemsControl ItemsSource="{Binding MatchHistory}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="vm:MatchHistoryEntry">
+                                            <Border Background="#091428"
+                                                    BorderBrush="#3C3C41"
+                                                    BorderThickness="1"
+                                                    CornerRadius="3"
+                                                    Padding="8,6"
+                                                    Margin="0,0,0,4">
+                                                <TextBlock Text="{Binding Result}"
+                                                           Foreground="{Binding Color}"
+                                                           FontSize="10"
+                                                           FontWeight="Bold" />
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Background="#0F1A2E"
+                                BorderBrush="#3C3C41"
+                                BorderThickness="1"
+                                CornerRadius="4"
+                                Padding="12">
+                            <StackPanel Spacing="10">
+                                <TextBlock Text="SESSION TOTALS"
+                                           Foreground="#C8AA6E"
+                                           FontSize="11"
+                                           FontWeight="Bold"
+                                           LetterSpacing="1" />
+                                <Grid ColumnDefinitions="*,*">
+                                    <StackPanel Spacing="3">
+                                        <TextBlock Text="HITS"
+                                                   Foreground="#A09B8C"
+                                                   FontSize="10"
+                                                   FontWeight="Bold" />
+                                        <TextBlock Text="{Binding TotalHits}"
+                                                   Foreground="#C8AA6E"
+                                                   FontSize="24"
+                                                   FontWeight="Bold" />
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Spacing="3">
+                                        <TextBlock Text="DAMAGE"
+                                                   Foreground="#A09B8C"
+                                                   FontSize="10"
+                                                   FontWeight="Bold" />
+                                        <TextBlock Text="{Binding MentalDamage}"
+                                                   Foreground="#C8AA6E"
+                                                   FontSize="24"
+                                                   FontWeight="Bold" />
+                                    </StackPanel>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Background="#111C2B"
+                                BorderBrush="#785A28"
+                                BorderThickness="1"
+                                CornerRadius="4"
+                                Padding="12">
+                            <StackPanel Spacing="5">
+                                <TextBlock Text="TEEMO SLAYER"
+                                           Foreground="#F5D887"
+                                           FontSize="11"
+                                           FontWeight="Black"
+                                           LetterSpacing="1" />
+                                <TextBlock Text="Defeat Teemo for the first time"
+                                           Foreground="#A09B8C"
+                                           FontSize="10"
+                                           TextWrapping="Wrap" />
+                                <TextBlock Text="{Binding TeemoSlayerStatus}"
+                                           Foreground="{Binding TeemoSlayerStatusColor}"
+                                           FontSize="9"
+                                           FontWeight="Black" />
+                                <TextBlock Text="{Binding TeemoKills, StringFormat='TEEMO KILLS · {0}'}"
+                                           Foreground="#A09B8C"
+                                           FontSize="9"
+                                           FontWeight="Bold" />
+                            </StackPanel>
+                        </Border>
+
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Center"
+                                    Spacing="8">
+                            <Button Content="RECORD WIN"
+                                    Command="{Binding RecordWinCommand}"
+                                    Padding="10,8" />
+                            <Button Content="RECORD LOSS"
+                                    Command="{Binding RecordLossCommand}"
+                                    Padding="10,8" />
+                        </StackPanel>
+                        <TextBlock Text="{Binding AudioStatus}"
+                                   HorizontalAlignment="Center"
+                                   Foreground="#A09B8C"
+                                   FontSize="9"
+                                   FontWeight="Bold"
+                                   TextWrapping="Wrap"
+                                   TextAlignment="Center" />
+                    </StackPanel>
+                </ScrollViewer>
+
+                <StackPanel Grid.Column="1"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Spacing="8">
+                    <Grid Width="410" RowDefinitions="Auto,Auto,Auto" RowSpacing="5">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock Text="{Binding TeemoLevel, StringFormat='LEVEL {0} / 18'}"
+                                       Foreground="#F5D887"
+                                       FontSize="11"
+                                       FontWeight="Black"
+                                       LetterSpacing="1" />
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding TeemoHealthText}"
+                                       Foreground="#E8E2D0"
+                                       FontSize="11"
+                                       FontWeight="Bold" />
+                        </Grid>
+                        <Border Grid.Row="1"
+                                Background="#C8AA6E"
+                                BorderBrush="#F5D887"
+                                BorderThickness="1"
+                                Padding="2">
+                            <Grid>
+                                <ProgressBar Classes="teemo-health"
+                                             Minimum="0"
+                                             Maximum="100"
+                                             Value="{Binding TeemoHealthPercent}" />
+                                <UniformGrid Columns="10"
+                                             IsHitTestVisible="False">
+                                    <Border BorderBrush="#091428" BorderThickness="0,0,1,0" />
+                                    <Border BorderBrush="#091428" BorderThickness="0,0,1,0" />
+                                    <Border BorderBrush="#091428" BorderThickness="0,0,1,0" />
+                                    <Border BorderBrush="#091428" BorderThickness="0,0,1,0" />
+                                    <Border BorderBrush="#091428" BorderThickness="0,0,1,0" />
+                                    <Border BorderBrush="#091428" BorderThickness="0,0,1,0" />
+                                    <Border BorderBrush="#091428" BorderThickness="0,0,1,0" />
+                                    <Border BorderBrush="#091428" BorderThickness="0,0,1,0" />
+                                    <Border BorderBrush="#091428" BorderThickness="0,0,1,0" />
+                                    <Border />
+                                </UniformGrid>
+                            </Grid>
+                        </Border>
+                        <TextBlock Grid.Row="2"
+                                   Text="{Binding TeemoHitStatus}"
+                                   HorizontalAlignment="Center"
+                                   Foreground="#A09B8C"
+                                   FontSize="10"
+                                   FontWeight="Bold" />
+                    </Grid>
+                    <Border Width="420"
+                            Height="440"
+                            Background="#0F1A2E"
+                            BorderBrush="#785A28"
+                            BorderThickness="1"
+                            CornerRadius="4"
+                            Padding="20">
+                        <StackPanel HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Spacing="20">
+                            <TextBlock Text="3D MODEL NOT INCLUDED"
+                                       Foreground="#C8AA6E"
+                                       FontSize="12"
+                                       FontWeight="Bold"
+                                       HorizontalAlignment="Center" />
+                            <TextBlock Text="Add properly licensed assets locally under Assets/Pets when a viewer is available."
+                                       Foreground="#A09B8C"
+                                       FontSize="10"
+                                       TextWrapping="Wrap"
+                                       TextAlignment="Center"
+                                       MaxWidth="300" />
+                            <Button Classes="hit-button"
+                                    Width="300"
+                                    Height="280"
+                                    Click="OnHitTeemo"
+                                    AutomationProperties.Name="Hit Teemo">
+                                <StackPanel HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Spacing="12">
+                                    <TextBlock Text="CLICK TO HIT"
+                                               Foreground="#F5D887"
+                                               FontSize="20"
+                                               FontWeight="Black"
+                                               HorizontalAlignment="Center" />
+                                    <TextBlock Text="{Binding SelectedWeaponDisplayName}"
+                                               Foreground="#F0E6D2"
+                                               FontSize="14"
+                                               FontWeight="Bold"
+                                               HorizontalAlignment="Center" />
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <ScrollViewer Grid.Column="2" VerticalScrollBarVisibility="Auto">
+                    <Border Background="#0F1A2E"
+                            BorderBrush="#785A28"
+                            BorderThickness="1"
+                            CornerRadius="4"
+                            Padding="12">
+                        <StackPanel Spacing="10">
+                            <StackPanel Spacing="3">
+                                <TextBlock Text="ARSENAL"
+                                           Foreground="#C8AA6E"
+                                           FontSize="12"
+                                           FontWeight="Bold"
+                                           LetterSpacing="1.5" />
+                                <TextBlock Text="Choose your loadout · damage per hit"
+                                           Foreground="#A09B8C"
+                                           FontSize="10"
+                                           TextWrapping="Wrap" />
+                            </StackPanel>
+                            <Border Background="#091428"
+                                    BorderBrush="#3C3C41"
+                                    BorderThickness="1"
+                                    CornerRadius="4"
+                                    Padding="8">
+                                <Grid ColumnDefinitions="52,*" ColumnSpacing="8">
+                                    <Image Source="{Binding SelectedWeaponIcon}"
+                                           Stretch="Uniform"
+                                           Width="48"
+                                           Height="48"
+                                           VerticalAlignment="Center" />
+                                    <StackPanel Grid.Column="1"
+                                                VerticalAlignment="Center"
+                                                Spacing="3">
+                                        <TextBlock Text="{Binding SelectedWeaponDisplayName}"
+                                                   Foreground="#F5D887"
+                                                   FontSize="11"
+                                                   FontWeight="Bold"
+                                                   TextWrapping="Wrap" />
+                                        <TextBlock Text="{Binding SelectedWeaponDamage}"
+                                                   Foreground="#A09B8C"
+                                                   FontSize="9"
+                                                   FontWeight="Bold" />
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                            <ItemsControl ItemsSource="{Binding WeaponOptions}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <UniformGrid Columns="2" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:WeaponOptionViewModel">
+                                        <Border ToolTip.Tip="{Binding StatsTooltip}">
+                                            <Button Classes="weapon-card"
+                                                    Classes.selected="{Binding IsSelected}"
+                                                    IsEnabled="{Binding IsUnlocked}"
+                                                    Opacity="{Binding CardOpacity}"
+                                                    Command="{Binding EquipCommand}"
+                                                    AutomationProperties.Name="{Binding Weapon.Name}">
+                                                <Grid RowDefinitions="50,Auto,Auto,Auto"
+                                                      RowSpacing="3">
+                                                    <Image Grid.Row="0"
+                                                           Source="{Binding Weapon.Icon}"
+                                                           Stretch="Uniform"
+                                                           Width="42"
+                                                           Height="42"
+                                                           HorizontalAlignment="Center" />
+                                                    <TextBlock Grid.Row="1"
+                                                               Text="{Binding Weapon.Name}"
+                                                               HorizontalAlignment="Center"
+                                                               TextAlignment="Center"
+                                                               TextTrimming="CharacterEllipsis"
+                                                               FontSize="10"
+                                                               FontWeight="Bold" />
+                                                    <TextBlock Grid.Row="2"
+                                                               Text="{Binding AttackStatsText}"
+                                                               HorizontalAlignment="Center"
+                                                               Foreground="#C8AA6E"
+                                                               FontSize="9"
+                                                               FontWeight="Bold"
+                                                               TextWrapping="Wrap" />
+                                                    <TextBlock Grid.Row="3"
+                                                               Text="{Binding UnlockRequirement}"
+                                                               HorizontalAlignment="Center"
+                                                               TextAlignment="Center"
+                                                               Foreground="{Binding UnlockRequirementColor}"
+                                                               FontSize="8"
+                                                               FontWeight="Black"
+                                                               TextWrapping="Wrap" />
+                                                </Grid>
+                                            </Button>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <TextBlock Text="{Binding QueueStatus}"
+                                       HorizontalAlignment="Center"
+                                       Foreground="#A09B8C"
+                                       FontSize="10"
+                                       FontWeight="Bold"
+                                       TextWrapping="Wrap"
+                                       TextAlignment="Center" />
+                            <Button Classes="primary-button"
+                                    Command="{Binding ReturnToQueueCommand}"
+                                    Content="{Binding QueueButtonText}" />
+                            <TextBlock Text="AntiTiltTeemo is not endorsed by Riot Games and does not reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. Riot Games and all associated properties are trademarks or registered trademarks of Riot Games, Inc. Item icons: Riot Data Dragon 16.20.1."
+                                       Foreground="#77766F"
+                                       FontSize="8"
+                                       TextWrapping="Wrap"
+                                       TextAlignment="Center" />
+                        </StackPanel>
+                    </Border>
+                </ScrollViewer>
+            </Grid>
+        </Grid>
+
+    </Grid>
+</Window>
